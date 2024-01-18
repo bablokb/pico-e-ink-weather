@@ -105,13 +105,21 @@ class OpenMeteoUIProvider:
     """ print size of object """
     print(f"{label} w,h: {obj.width},{obj.height}")
 
+  # --- format temperature   -------------------------------------------------
+
+  def _format_temp(self,value):
+    """ format temperature """
+    return f'{value}{self._model["units"]["temp"]}'
+
   # --- get grid of forecast-boxes   -----------------------------------------
 
   def _get_grid(self,width,height):
     """ get grid of forecast-boxes """
 
-    b_width = int(width/4)
-    b_height = int(height/2)
+    b_width   = int(width/4)
+    b_width2  = int(width/8)
+    b_height  = int(height/2)
+    b_height2 = int(height/4)
     g        = displayio.Group()
 
     # horizontal line
@@ -122,11 +130,14 @@ class OpenMeteoUIProvider:
       g.append(Line(i*b_width,0,i*b_width,height,
                  color=UI_PALETTE[UI_SETTINGS.FOREGROUND]))
     # current day
-    g.append(label.Label(self._large_font,text=str(self._model["current"].temp),
-                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,0),
-                       anchored_position=(self._margin+int(b_width/2),0)))
+    g.append(
+      label.Label(self._large_font,
+                  text=self._format_temp(self._model["current"].temp),
+                  color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
+                  background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                  anchor_point=(0.5,0),
+                  anchored_position=(self._margin+b_width2,
+                                     self._margin)))
 
     wdir_char = OpenMeteoUIProvider.DIR_MAP[
       self._model["current"].wind_dir]
@@ -134,57 +145,58 @@ class OpenMeteoUIProvider:
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0.5),
-                       anchored_position=(self._margin+int(b_width/2),
-                                          int(b_height/2))))
+                       anchored_position=(self._margin+b_width2,b_height2
+                                          )))
 
     speed_txt = f"{self._model['current'].wind_speed} m/s"
     g.append(label.Label(self._small_font,text=speed_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,1),
-                       anchored_position=(self._margin+int(b_width/2),b_height)))
+                       anchored_position=(self._margin+b_width2,
+                                          b_height-self._margin)))
 
     # hours
     for i in range(3):
       h_data = self._model["hours"][i]
-      h_txt  = f"{h_data.hour}\n{h_data.temp}"
+      h_txt  = f"{h_data.hour}:00\n{self._format_temp(h_data.temp)}"
       g.append(label.Label(self._small_font,text=h_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0),
                        anchored_position=(
-                             self._margin+(i+1)*(b_width+1)+int(b_width/2),
-                             0)))
+                             self._margin+(i+1)*(b_width+1)+b_width2,
+                             self._margin)))
 
       icon = self._map_wmo(h_data.wmo,h_data.is_day)
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,1),
-                       anchored_position=(
-                             self._margin+(i+1)*b_width+int(b_width/2),
-                             b_height)))
+                       anchor_point=(0.5,0.5),
+                       anchored_position=(self._margin+(i+1)*b_width+b_width2,
+                                          b_height2)))
 
     # days
     for i in range(4):
       d_data = self._model["days"][i]
-      d_txt  = f"{d_data.day}\n{d_data.tmin}/{d_data.tmax}"
+      d_txt  = f"{d_data.day}.{d_data.month}.\n"
+      d_txt += f"{self._format_temp(d_data.tmin)}/"
+      d_txt += f"{self._format_temp(d_data.tmax)}"
       g.append(label.Label(self._small_font,text=d_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0),
                        anchored_position=(
-                             self._margin+(i+1)*(b_width+1)+int(b_width/2),
-                             b_height+1)))
+                             self._margin+i*(b_width+1)+b_width2,
+                             b_height+1+self._margin)))
 
       icon = self._map_wmo(d_data.wmo)
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,1),
-                       anchored_position=(
-                             self._margin+(i+1)*(b_width+1)+int(b_width/2),
-                             height)))
+                       anchor_point=(0.5,0.5),
+                       anchored_position=(self._margin+i*(b_width+1)+b_width2,
+                                          b_height+1+b_height2)))
     return g
 
   # --- update data   --------------------------------------------------------
@@ -217,7 +229,10 @@ class OpenMeteoUIProvider:
     # create layout for weather
     width  = display.width
     height = display.height - h_header - h_footer
-    g.append(self._get_grid(width,height))
+    grid = self._get_grid(width,height)
+    grid.x = self._margin
+    grid.y = h_header
+    g.append(grid)
 
     return g
 

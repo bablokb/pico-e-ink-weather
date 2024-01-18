@@ -53,19 +53,22 @@ class Frame:
     """ create box with day-number """
 
     day_box = displayio.Group()
-    bg_color = COLORS.BLACK
     day_font = bitmap_font.load_font(UI_SETTINGS.DAY_FONT)
     day = label.Label(day_font,text=self._data["day"],
                       color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                      background_color=UI_PALETTE[bg_color],
+                      background_color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                       background_tight=True,
-                      anchor_point=(0,0),
-                      anchored_position=(self._margin,self._margin))
+                      anchor_point=(0.5,0.5))
 
+    w = day.bounding_box[2]+2*self._margin
+    h = day.bounding_box[3]+2*self._margin
+    day_size = max(w,h)
+    day.anchored_position=(int(day_size/2), int(day_size/2))
+    
     background = Rectangle(pixel_shader=UI_PALETTE,x=0,y=0,
-                           width=day.bounding_box[2]+2*self._margin,
-                           height=day.bounding_box[3]+2*self._margin,
-                           color_index=bg_color)
+                           width=day_size,
+                           height=day_size,
+                           color_index=UI_SETTINGS.FOREGROUND)
     day_box.append(background)
     day_box.append(day)
     return (day_box,background.width,background.height)
@@ -78,7 +81,7 @@ class Frame:
     header = displayio.Group()
     
     day_box,w,h = self._get_day_box()
-    day_box.x = self._display.width-w-self._margin
+    day_box.x = self._display.width-w
     day_box.y = 0
     header.append(day_box)
 
@@ -91,7 +94,7 @@ class Frame:
                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                       background_tight=True,
                       anchor_point=(0,1),
-                       anchored_position=(self._margin,h-self._margin))
+                       anchored_position=(2*self._margin,h-self._margin))
     header.append(date)
     return (header,h)
 
