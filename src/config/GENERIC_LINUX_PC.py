@@ -8,6 +8,12 @@
 #
 # ----------------------------------------------------------------------------
 
+# display-sizes
+#   - Inky wHat:            400x300
+#   - Inky-Impression 4":   640x400
+#   - Inky-Impression 5.7": 600x448
+#   - Inky-Frame 5.7":      600x448
+
 import sys
 import time
 import board
@@ -18,7 +24,7 @@ class PygameConfig(HWConfig):
 
   def get_display(self):
     """ return display """
-    self._display = PyGameDisplay(width=600,height=448,
+    self._display = PyGameDisplay(width=400,height=300,
                                   native_frames_per_second=1)
     return self._display
 
