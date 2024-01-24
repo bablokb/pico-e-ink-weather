@@ -146,7 +146,18 @@ class OpenMeteoDataProvider:
       #val.humidity  = data["relativehumidity_2m"]
       #val.precipit  = data["precipitation"]
       self.hours.append(val)
-    
+
+  # --- round data   ----------------------------------------------------------
+
+  def _round(self,value):
+    """ round data """
+    if value > 0:
+      return int((round(value*10,1)+5)/10)
+    elif value < 0:
+      return -int((round(-value*10,1)+5)/10)
+    else:
+      return value
+
   # --- parse daily data   ----------------------------------------------------
 
   def _parse_days(self,data):
@@ -156,8 +167,8 @@ class OpenMeteoDataProvider:
       val = Values()
       val.day   = data["time"][i][-2:]
       val.month = data["time"][i][-5:-3]
-      val.tmin  = data["temperature_2m_min"][i]
-      val.tmax  = data["temperature_2m_max"][i]
+      val.tmin  = self._round(data["temperature_2m_min"][i])
+      val.tmax  = self._round(data["temperature_2m_max"][i])
       val.wmo   = data["weathercode"][i]
       #val.sunrise    = self._parse_time(data["sunrise"])[1]
       #val.sunset     = self._parse_time(data["sunset"])[1]
