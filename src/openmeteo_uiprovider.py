@@ -130,7 +130,7 @@ class OpenMeteoUIProvider:
                   color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                   background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                   anchor_point=(0.5,0),
-                  anchored_position=(self._margin+b_width2,
+                  anchored_position=(b_width2,
                                      self._margin)))
 
     wdir_char = OpenMeteoUIProvider.DIR_MAP[
@@ -139,7 +139,7 @@ class OpenMeteoUIProvider:
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0.5),
-                       anchored_position=(self._margin+b_width2,b_height2
+                       anchored_position=(b_width2,b_height2
                                           )))
 
     speed_txt = f"{self._model['current'].wind_speed} {self._model['units']['wind_speed']}"
@@ -147,7 +147,7 @@ class OpenMeteoUIProvider:
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,1),
-                       anchored_position=(self._margin+b_width2,
+                       anchored_position=(b_width2,
                                           b_height-self._margin)))
 
     # hours
