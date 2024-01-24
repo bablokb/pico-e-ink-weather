@@ -105,12 +105,6 @@ class OpenMeteoUIProvider:
     """ print size of object """
     print(f"{label} w,h: {obj.width},{obj.height}")
 
-  # --- format temperature   -------------------------------------------------
-
-  def _format_temp(self,value):
-    """ format temperature """
-    return f'{value}{self._model["units"]["temp"]}'
-
   # --- get grid of forecast-boxes   -----------------------------------------
 
   def _get_grid(self,width,height):
@@ -132,7 +126,7 @@ class OpenMeteoUIProvider:
     # current day
     g.append(
       label.Label(self._large_font,
-                  text=self._format_temp(self._model["current"].temp),
+                  text=f"{self._model['current'].temp}°",
                   color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                   background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                   anchor_point=(0.5,0),
@@ -159,7 +153,7 @@ class OpenMeteoUIProvider:
     # hours
     for i in range(3):
       h_data = self._model["hours"][i]
-      h_txt  = f"{h_data.hour}:00\n{self._format_temp(h_data.temp)}"
+      h_txt  = f"{h_data.hour}:00\n{h_data.temp}°"
       g.append(label.Label(self._small_font,text=h_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
@@ -180,8 +174,7 @@ class OpenMeteoUIProvider:
     for i in range(4):
       d_data = self._model["days"][i]
       d_txt  = f"{d_data.day}.{d_data.month}.\n"
-      d_txt += f"{self._format_temp(d_data.tmin)}/"
-      d_txt += f"{self._format_temp(d_data.tmax)}"
+      d_txt += f"{d_data.tmin}°/{d_data.tmax}°"
       g.append(label.Label(self._small_font,text=d_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
