@@ -157,6 +157,7 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._small_font,text=h_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       line_spacing = 0.8,
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
@@ -179,9 +180,10 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._small_font,text=d_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       line_spacing = 0.8,
                        anchor_point=(0.5,0.00),
                        anchored_position=(
-                             self._margin+i*(b_width+1)+b_width2,
+                             i*(b_width+1)+b_width2,
                              b_height+1+self._margin)))
 
       icon = self._map_wmo(d_data.wmo)
