@@ -142,7 +142,7 @@ class OpenMeteoUIProvider:
                        anchored_position=(self._margin+b_width2,b_height2
                                           )))
 
-    speed_txt = f"{self._model['current'].wind_speed} m/s"
+    speed_txt = f"{self._model['current'].wind_speed} {self._model['units']['wind_speed']}"
     g.append(label.Label(self._small_font,text=speed_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],

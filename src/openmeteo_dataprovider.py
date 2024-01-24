@@ -36,7 +36,7 @@ class OpenMeteoDataProvider:
     "relativehumidity_2m",
     "precipitation",
     "pressure_msl",
-    "windspeed_10m",
+    "wind_speed_10m",
     "winddirection_10m"
   ])
   OM_CURRENT = f"is_day,{OM_HOURLY}"
@@ -55,7 +55,7 @@ class OpenMeteoDataProvider:
       "https://api.open-meteo.com/v1/forecast?",
       f"latitude={app_config.latitude}",
       f"&longitude={app_config.longitude}",
-      "&windspeed_unit=ms",
+      "&wind_speed_unit=kmh",
       f"&current=is_day,{OpenMeteoDataProvider.OM_CURRENT}",
       f"&hourly={OpenMeteoDataProvider.OM_HOURLY}",
       f"&daily={OpenMeteoDataProvider.OM_DAILY}",
@@ -102,7 +102,7 @@ class OpenMeteoDataProvider:
     # measurements
     self.current.temp       = data["temperature_2m"]
     self.current.is_day     = data["is_day"]
-    self.current.wind_speed = data["windspeed_10m"]
+    self.current.wind_speed = data["wind_speed_10m"]
     self.current.wind_dir   = OpenMeteoDataProvider.DIRECTION[
       int((data["winddirection_10m"]+22.5)/45)]
     self.current.wmo       = data["weathercode"]
@@ -195,7 +195,7 @@ class OpenMeteoDataProvider:
     data.update({
       "units": {
         "temp":       om_data["current_units"]["temperature_2m"],
-        "wind_speed": om_data["current_units"]["windspeed_10m"]
+        "wind_speed": om_data["current_units"]["wind_speed_10m"]
         },
       "current": self.current,
       "hours":   self.hours,
