@@ -166,9 +166,10 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,0.5),
+                       background_tight=True,
+                       anchor_point=(0.5,1.0),
                        anchored_position=(self._margin+(i+1)*b_width+b_width2,
-                                          b_height2)))
+                                          b_height-self._margin)))
 
     # days
     for i in range(4):
@@ -178,7 +179,7 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._small_font,text=d_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,0),
+                       anchor_point=(0.5,0.00),
                        anchored_position=(
                              self._margin+i*(b_width+1)+b_width2,
                              b_height+1+self._margin)))
@@ -187,9 +188,10 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       anchor_point=(0.5,0.5),
+                       background_tight=True,
+                       anchor_point=(0.5,1.0),
                        anchored_position=(self._margin+i*(b_width+1)+b_width2,
-                                          b_height+1+b_height2)))
+                                          b_height+1+b_height-self._margin)))
     return g
 
   # --- update data   --------------------------------------------------------
