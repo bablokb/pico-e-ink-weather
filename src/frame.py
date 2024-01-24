@@ -58,16 +58,11 @@ class Frame:
                       color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                       background_color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                       background_tight=True,
-                      anchor_point=(0.5,0.5))
-
-    w = day.bounding_box[2]+2*self._margin
-    h = day.bounding_box[3]+2*self._margin
-    day_size = max(w,h)
-    day.anchored_position=(int(day_size/2), int(day_size/2))
-    
+                      anchor_point=(0,0),
+                      anchored_position=(self._margin,self._margin))
     background = Rectangle(pixel_shader=UI_PALETTE,x=0,y=0,
-                           width=day_size,
-                           height=day_size,
+                           width=day.bounding_box[2]+2*self._margin,
+                           height=day.bounding_box[3]+2*self._margin,
                            color_index=UI_SETTINGS.FOREGROUND)
     day_box.append(background)
     day_box.append(day)
