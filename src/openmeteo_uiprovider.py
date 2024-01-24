@@ -168,9 +168,9 @@ class OpenMeteoUIProvider:
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        background_tight=True,
-                       anchor_point=(0.5,1.0),
+                       anchor_point=(0.5,0.15),
                        anchored_position=(self._margin+(i+1)*b_width+b_width2,
-                                          b_height-self._margin)))
+                                          b_height2)))
 
     # days
     for i in range(4):
@@ -191,9 +191,9 @@ class OpenMeteoUIProvider:
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        background_tight=True,
-                       anchor_point=(0.5,1.0),
+                       anchor_point=(0.5,0.15),
                        anchored_position=(self._margin+i*(b_width+1)+b_width2,
-                                          b_height+1+b_height-self._margin)))
+                                          b_height+1+b_height2)))
     return g
 
   # --- update data   --------------------------------------------------------
