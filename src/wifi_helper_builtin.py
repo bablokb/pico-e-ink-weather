@@ -11,6 +11,7 @@
 import board
 import time
 import socketpool
+import ssl
 import adafruit_requests
 
 from settings import secrets
@@ -24,12 +25,11 @@ class WifiHelper:
     """ constructor """
 
     self._debug = debug
+    self._wifi = None
     if not hasattr(secrets,'channel'):
       secrets.channel = 0
     if not hasattr(secrets,'timeout'):
       secrets.timeout = None
-
-    self._wifi = None
 
   # --- print debug-message   ------------------------------------------------
 
@@ -64,7 +64,7 @@ class WifiHelper:
         continue
     self.msg("connected to %s" % secrets.ssid)
     pool = socketpool.SocketPool(wifi.radio)
-    self._requests = adafruit_requests.Session(pool)
+    self._requests = adafruit_requests.Session(pool,ssl.create_default_context())
 
   # --- return implementing wifi   -----------------------------------------
 
@@ -78,4 +78,6 @@ class WifiHelper:
   def get_json(self,url):
     """ process get-request """
 
+    if not self._wifi:
+      self.connect()
     return self._requests.get(url).json()
