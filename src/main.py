@@ -22,7 +22,7 @@ from openmeteo_dataprovider import OpenMeteoDataProvider as DataProvider
 
 ui_provider   = UIProvider()
 data_provider = DataProvider() 
-app = EInkApp(data_provider,ui_provider,with_rtc=True)
+app = EInkApp(data_provider,ui_provider,with_rtc=False)
 app.blink(0.5)
 print(f"startup: {time.monotonic()-start:f}s")
 
