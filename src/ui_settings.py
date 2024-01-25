@@ -48,6 +48,9 @@ UI_MONTHS = [
   "Januar", "Februar", "März",      "April",   "Mai",      "Juni",
   "Juli",   "August",  "September", "Oktober", "November", "Dezember"
   ]
+UI_DAYS = [
+  "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"
+  ]
 
 UI_SETTINGS = Settings()
 UI_SETTINGS.LARGE_FONT  = "fonts/DejaVuSerif-32.bdf"

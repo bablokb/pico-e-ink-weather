@@ -10,7 +10,7 @@
 #
 # -------------------------------------------------------------------------
 
-import json, datetime
+import json, time
 
 from settings import app_config
 
@@ -158,6 +158,17 @@ class OpenMeteoDataProvider:
     else:
       return value
 
+  # --- get weekday   ---------------------------------------------------------
+
+  def _get_wday(self,iso_t):
+    """ get weekday from iso-day """
+
+    y,m,d = iso_t.split("-")
+    epoch = time.mktime((int(y),int(m),int(d),
+                         12, 0, 0,
+                         -1,-1,-1))
+    return (int(epoch/86400)+3) % 7                    # 01/01/1970 is Thursday
+
   # --- parse daily data   ----------------------------------------------------
 
   def _parse_days(self,data):
@@ -167,6 +178,7 @@ class OpenMeteoDataProvider:
       val = Values()
       val.day   = data["time"][i][-2:]
       val.month = data["time"][i][-5:-3]
+      val.wday  = self._get_wday(data["time"][i])
       val.tmin  = self._round(data["temperature_2m_min"][i])
       val.tmax  = self._round(data["temperature_2m_max"][i])
       val.wmo   = data["weathercode"][i]
