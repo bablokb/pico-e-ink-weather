@@ -1,8 +1,8 @@
 # -------------------------------------------------------------------------
 # Display weather-data (current and forecast) on an ACEP e-paper display.
 #
-# This program needs an additional configuration file secrets.py
-# with wifi-credentials.
+# This program needs an additional configuration file settings.py
+# with wifi-credentials and application settings.
 #
 # Author: Bernhard Bablok
 # License: GPL3

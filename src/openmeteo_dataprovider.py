@@ -12,7 +12,7 @@
 
 import json, datetime
 
-from config.secrets import app_config
+from settings import app_config
 
 # --- helper class (value-holder)   ------------------------------------------
 

@@ -13,7 +13,7 @@ import time
 import socketpool
 import adafruit_requests
 
-from config.secrets import secrets
+from settings import secrets
 
 class WifiHelper:
   """ Wifi-Helper for MCU with integrated wifi """

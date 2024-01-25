@@ -26,7 +26,7 @@ except Exception as ex:
   hw_impl = builtins.__import__(config_file,None,None,["config"],0)
   print("using default implementation")
 
-from config.secrets import app_config
+from settings import app_config
 
 # --- application class   ----------------------------------------------------
 
