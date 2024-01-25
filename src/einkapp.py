@@ -140,7 +140,3 @@ class EInkApp:
     finally:
       content = self._uiprovider.create_content(self.display)
       self.update_display(content)
-    self.shutdown()
-
-    # we should not be here ;-)
-    time.sleep(60)

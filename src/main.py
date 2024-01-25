@@ -25,4 +25,14 @@ data_provider = DataProvider()
 app = EInkApp(data_provider,ui_provider,with_rtc=True)
 app.blink(0.5)
 print(f"startup: {time.monotonic()-start:f}s")
-app.run()
+
+while True:
+  app.run()
+  if app.is_pygame:
+    # pygame: don't loop, just wait for CTRL-C
+    app.shutdown()
+  else:
+    # call shutdown if battery-management is available
+    # app.set_wakeup(...)
+    # app.shutdown()
+    time.sleep(60)
