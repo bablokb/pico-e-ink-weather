@@ -76,4 +76,4 @@ class HalPicoPiBase(HalBase):
     self._done.value = 0
     time.sleep(0.5)
 
-hal = HalPicoPiBase()
+impl = HalPicoPiBase()

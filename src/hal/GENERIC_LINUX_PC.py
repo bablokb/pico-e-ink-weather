@@ -49,4 +49,4 @@ class HalPygame(HalBase):
         sys.exit(0)
       time.sleep(0.25)
 
-hal = HalPygame()
+impl = HalPygame()

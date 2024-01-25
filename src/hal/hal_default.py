@@ -9,4 +9,4 @@
 # ----------------------------------------------------------------------------
 
 from hal.hal_base import HalBase
-hal = HalBase()
+impl = HalBase()

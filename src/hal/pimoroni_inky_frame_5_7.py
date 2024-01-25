@@ -34,4 +34,4 @@ class HalInkyFrame57(HalBase):
     """ turn off power by pulling enable pin low """
     board.ENABLE_DIO.value = 0
 
-hal = HalInkyFrame57()
+impl = HalInkyFrame57()
