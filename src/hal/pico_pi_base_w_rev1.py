@@ -18,7 +18,7 @@ import displayio
 import adafruit_spd1656
 from digitalio import DigitalInOut, Direction
 
-# pinout for Pimoroni Inky-Impression
+# pinout for Pimoroni Inky-Impression / wHat
 SCK_PIN   = board.SCLK
 MOSI_PIN  = board.MOSI
 MISO_PIN  = board.MISO
@@ -38,26 +38,49 @@ class HalPicoPiBase(HalBase):
     self._done.direction = Direction.OUTPUT
     self._done.value     = 0
 
-  def _get_size(self):
+  def _read_eeprom(self):
     """ try to read the eeprom """
+    EE_ADDR = 0x50
     i2c_device = I2CDevice(board.I2C(),EE_ADDR)
+    buffer = bytearray(29)
     with i2c_device as i2c:
-      i2c.write(bytes([register])+bytes(data))
+      i2c.write(bytes([0x00])+bytes([0x00]))
+      i2c.write_then_readinto(bytes([0x00]),buffer)
+    return buffer
 
+  def _get_display_info(self):
+    """ try to return tuple (width,height,color) """
+    COLOR = [None, 'black', 'red', 'yellow', None, 'acep7']
+    try:
+      data = struct.unpack('<HHBBB22s',self._read_eeprom())
+      return [data[0],data[1],COLOR[data[2]]]
+    except Exception as ex:
+      print(f"could not read EEPROM: {ex}\nTrouble ahead!!!")
+      return [0,0,None]
 
   def get_display(self):
     """ return display """
     displayio.release_displays()
-    width,height = self._get_size()
+    width,height,color = self._get_display_info()
     spi = busio.SPI(SCK_PIN,MOSI=MOSI_PIN,MISO=MISO_PIN)
     display_bus = displayio.FourWire(
       spi, command=DC_PIN, chip_select=CS_PIN_D, reset=RST_PIN, baudrate=1000000
     )
-    display = adafruit_spd1656.SPD1656(display_bus,busy_pin=BUSY_PIN,
-                                       width=width,height=height,
-                                       refresh_time=2,
-                                       seconds_per_frame=40)
-    display.auto_refresh = False
+
+    if color == 'acep7':
+      # assume Inky-Impression
+      import adafruit_spd1656
+      display = adafruit_spd1656.SPD1656(display_bus,busy_pin=BUSY_PIN,
+                                         width=width,height=height,
+                                         refresh_time=2,
+                                         seconds_per_frame=40)
+      display.auto_refresh = False
+    else:
+      # assume Inky-wHat
+      import what
+      display = what.Inky_wHat(display_bus,busy_pin=BUSY_PIN,
+                               color=color,border_color=color,
+                               black_bits_inverted=True)
     return display
 
   def get_rtc_ext(self):
