@@ -1,6 +1,8 @@
 # ----------------------------------------------------------------------------
-# HWConfig: Base-class with hardware-specific methods. Some methods are
-# usually overridden by board-specific sub-classes.
+# HalBase: Hardware-Abstraction-Layer base-class.
+#
+# This class implements standard methods. If necessary, some of them must be
+# overridden by board-specific sub-classes.
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -12,7 +14,7 @@
 import board
 from digitalio import DigitalInOut, Direction
 
-class HWConfig:
+class HalBase:
   def __init__(self):
     """ constructor """
     pass

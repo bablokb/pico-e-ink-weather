@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# pico_zero_base.py: HW-config for Pico Zero Base and Inky-Impression
+# hal_default.py: default HAL for board-specific setup
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -8,4 +8,5 @@
 #
 # ----------------------------------------------------------------------------
 
-from config.pico_pi_base_w_rev1 import config
+from hal.hal_base import HalBase
+hal = HalBase()

@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# pimoroni_inky_frame_5_7.py: HW-config for Pimoroni InkyFrame 5.7
+# pimoroni_inky_frame_5_7.py: HAL for Pimoroni InkyFrame 5.7
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -12,10 +12,10 @@ import board
 
 from digitalio import DigitalInOut, Direction
 
-from hwconfig import HWConfig
+from hal.hal_base import HalBase
 
-class InkyFrame57Config(HWConfig):
-  """ InkyFrame 5.7 specific configuration-class """
+class HalInkyFrame57(HalBase):
+  """ InkyFrame 5.7 specific HAL-class """
 
   def status_led(self,value):
     """ set status LED """
@@ -34,4 +34,4 @@ class InkyFrame57Config(HWConfig):
     """ turn off power by pulling enable pin low """
     board.ENABLE_DIO.value = 0
 
-config = InkyFrame57Config()
+hal = HalInkyFrame57()

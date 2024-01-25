@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# GENERIC_LINUX_PC.py: HW-config for simulation with PygameDisplay
+# GENERIC_LINUX_PC.py: HAL for simulation with PygameDisplay
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -18,9 +18,10 @@ import sys
 import time
 import board
 from blinka_displayio_pygamedisplay import PyGameDisplay
-from hwconfig import HWConfig
-class PygameConfig(HWConfig):
-  """ GENERIC_LINUX_PC specific configuration-class """
+from hal.hal_base import HalBase
+
+class HalPygame(HalBase):
+  """ GENERIC_LINUX_PC specific HAL-class """
 
   def get_display(self):
     """ return display """
@@ -48,4 +49,4 @@ class PygameConfig(HWConfig):
         sys.exit(0)
       time.sleep(0.25)
 
-config = PygameConfig()
+hal = HalPygame()

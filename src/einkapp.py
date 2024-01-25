@@ -15,15 +15,15 @@ import time
 import board
 import traceback
 
-# import board-specific implementations
+# import HAL (hardware-abstraction-layer)
 try:
-  config_file = "config."+board.board_id.replace(".","_")
-  hw_impl = builtins.__import__(config_file,None,None,["config"],0)
+  hal_file = "hal."+board.board_id.replace(".","_")
+  hal = builtins.__import__(hal_file,None,None,["hal"],0)
   print("using board-specific implementation")
 except Exception as ex:
-  print(f"!!! error or no board specific config: {ex}. Trouble ahead !!!")
-  config_file = "config.def_config"
-  hw_impl = builtins.__import__(config_file,None,None,["config"],0)
+  print(f"!!! error or no board specific HAL: {ex}. Trouble ahead !!!")
+  hal_file = "hal.hal_default"
+  hal = builtins.__import__(hal_file,None,None,["hal"],0)
   print("using default implementation")
 
 from settings import app_config
@@ -50,14 +50,14 @@ class EInkApp:
   def _setup(self,with_rtc):
     """ setup hardware """
     
-    self.display    = hw_impl.config.get_display()
+    self.display    = hal.hal.get_display()
     self.is_pygame  = hasattr(self.display,"check_quit")
-    self.bat_level  = hw_impl.config.bat_level
-    self._led       = hw_impl.config.status_led
-    self.wifi       = hw_impl.config.wifi()
-    self._shutdown  = hw_impl.config.shutdown
+    self.bat_level  = hal.hal.bat_level
+    self._led       = hal.hal.status_led
+    self.wifi       = hal.hal.wifi()
+    self._shutdown  = hal.hal.shutdown
     if with_rtc:
-      self._rtc_ext = hw_impl.config.get_rtc_ext()
+      self._rtc_ext = hal.hal.get_rtc_ext()
       if self._rtc_ext:
         self._rtc_ext.set_wifi(self.wifi)
 

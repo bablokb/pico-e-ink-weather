@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# pico_pi_base_rev1.py: config for Pico Pi Base, pcb-en-control and Inky-Impression
+# pico_pi_base_rev1.py: HAL for Pico Pi Base, pcb-en-control and Inky-Impression
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -10,7 +10,7 @@
 
 import board
 
-from hwconfig import HWConfig
+from hal.hal_base import HalBase
 import busio
 from adafruit_bus_device.i2c_device import I2CDevice
 import struct
@@ -29,8 +29,8 @@ BUSY_PIN  = board.GPIO17
 
 DONE_PIN  = board.GP4
 
-class PicoPiBaseConfig(HWConfig):
-  """ pico-pi-base specific configuration-class """
+class HalPicoPiBase(HalBase):
+  """ pico-pi-base specific HAL-class """
 
   def __init__(self):
     """ constructor """
@@ -76,4 +76,4 @@ class PicoPiBaseConfig(HWConfig):
     self._done.value = 0
     time.sleep(0.5)
 
-config = PicoPiBaseConfig()
+hal = HalPicoPiBase()
