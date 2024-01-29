@@ -12,6 +12,7 @@
 
 import builtins
 import time
+import alarm
 import board
 import traceback
 
@@ -70,11 +71,18 @@ class EInkApp:
   def update_data(self):
     """ update data """
 
-    start = time.monotonic()
     self.data = {}
     self.data["bat_level"] = self.bat_level()
+
+    start = time.monotonic()
     self._dataprovider.update_data(self.data)
+    duration = time.monotonic()-start
+    print(f"update_data (dataprovider): {duration:f}s")
+
+    start = time.monotonic()
     self._uiprovider.update_data(self.data)
+    duration = time.monotonic()-start
+    print(f"update_data (uiprovider): {duration:f}s")
 
   # --- update display   -----------------------------------------------------
 
@@ -90,7 +98,6 @@ class EInkApp:
     start = time.monotonic()
 
     if not self.is_pygame and self.display.time_to_refresh > 0.0:
-      import alarm
       # ttr will be >0 only if system is on USB-power (running...)
       print(f"time-to-refresh: {self.display.time_to_refresh}")
       time_alarm = alarm.time.TimeAlarm(
@@ -108,7 +115,7 @@ class EInkApp:
         time_alarm = alarm.time.TimeAlarm(
           monotonic_time=time.monotonic()+update_time)
         alarm.light_sleep_until_alarms(time_alarm)
-        print("update finished!")
+      print("update finished!")
 
   # --- blink status-led   ---------------------------------------------------
 
