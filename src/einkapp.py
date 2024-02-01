@@ -12,9 +12,13 @@
 
 import builtins
 import time
-import alarm
 import board
 import traceback
+
+try:
+  import alarm
+except:
+  pass
 
 # Import HAL (hardware-abstraction-layer).
 # This expects an object "impl" within the implementing hal_file.
