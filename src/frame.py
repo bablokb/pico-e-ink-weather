@@ -89,7 +89,7 @@ class Frame:
                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                       background_tight=True,
                       anchor_point=(0,1),
-                       anchored_position=(2*self._margin,h-self._margin))
+                       anchored_position=(5*self._margin,h-2*self._margin))
     header.append(date)
     return (header,h)
 
@@ -107,15 +107,10 @@ class Frame:
                          anchor_point=(0,1),
                          anchored_position=(self._margin,
                                             self._display.height-self._margin))
-    color = UI_PALETTE[UI_SETTINGS.FOREGROUND]
-    if self._data['bat_level'] < 3.1:
-      color = UI_PALETTE[COLORS.RED]
-    elif self._data['bat_level'] < 3.3:
-      color = UI_PALETTE[COLORS.ORANGE]
 
     level = label.Label(self._small_font,
                         text=f"{self._data['bat_level']:0.1f}V",
-                        color=color,
+                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                         background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                         base_alignment=True,
                         anchor_point=(1,1),
