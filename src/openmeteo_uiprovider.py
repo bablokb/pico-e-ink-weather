@@ -153,15 +153,23 @@ class OpenMeteoUIProvider:
     # hours
     for i in range(3):
       h_data = self._model["hours"][i]
-      h_txt  = f"{h_data.hour}:00\n{h_data.temp}°"
-      g.append(label.Label(self._small_font,text=h_txt,
+      h_txt1  = f"{h_data.hour}:00"
+      h_txt2  = f"{h_data.temp}°"
+      h_txt1_label = label.Label(self._small_font,text=h_txt1,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       line_spacing = 0.8,
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
-                             self._margin)))
+                             self._margin))
+      g.append(h_txt1_label)
+      g.append(label.Label(self._small_font,text=h_txt2,
+                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
+                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       anchor_point=(0.5,0),
+                       anchored_position=(
+                             self._margin+(i+1)*(b_width+1)+b_width2,
+                             self._margin+h_txt1_label.bounding_box[3]+6)))
 
       icon = self._map_wmo(h_data.wmo,h_data.is_day)
       g.append(label.Label(self._wicon_font,text=icon,
@@ -175,16 +183,24 @@ class OpenMeteoUIProvider:
     # days
     for i in range(4):
       d_data = self._model["days"][i]
-      d_txt  = f"{UI_DAYS[d_data.wday]} {d_data.day}.{d_data.month}.\n"
-      d_txt += f"{d_data.tmin}°/{d_data.tmax}°"
-      g.append(label.Label(self._small_font,text=d_txt,
+      d_txt1 = f"{UI_DAYS[d_data.wday]} {d_data.day}.{d_data.month}."
+      d_txt2 = f"{d_data.tmin}°/{d_data.tmax}°"
+      d_txt1_label = label.Label(self._small_font,text=d_txt1,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                       line_spacing = 0.8,
                        anchor_point=(0.5,0.00),
                        anchored_position=(
                              i*(b_width+1)+b_width2,
-                             b_height+1+self._margin)))
+                             b_height+1+self._margin))
+      g.append(d_txt1_label)
+      g.append(label.Label(self._small_font,text=d_txt2,
+                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
+                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       anchor_point=(0.5,0.00),
+                       anchored_position=(
+                             i*(b_width+1)+b_width2,
+                             b_height+1+self._margin+
+                             d_txt1_label.bounding_box[3]+6)))
 
       icon = self._map_wmo(d_data.wmo)
       g.append(label.Label(self._wicon_font,text=icon,
