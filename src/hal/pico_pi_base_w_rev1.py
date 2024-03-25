@@ -80,7 +80,7 @@ class HalPicoPiBase(HalBase):
       import what
       display = what.Inky_wHat(display_bus,busy_pin=BUSY_PIN,
                                color=color,border_color=color,
-                               black_bits_inverted=True)
+                               black_bits_inverted=False)
     return display
 
   def get_rtc_ext(self):
