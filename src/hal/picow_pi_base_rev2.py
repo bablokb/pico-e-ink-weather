@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# pico_pi_base_w_rev2.py: HAL for Pico Pi Base and Inky-Impression
+# picow_pi_base_rev2.py: HAL for PicoW Pi Base and Inky-Impression
 #
 # Author: Bernhard Bablok
 # License: GPL3
@@ -8,4 +8,4 @@
 #
 # ----------------------------------------------------------------------------
 
-from hal.pico_pi_base_w_rev1 import hal
+from hal.picow_pi_base_rev1 import hal
