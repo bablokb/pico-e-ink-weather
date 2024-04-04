@@ -60,7 +60,7 @@ class OpenMeteoDataProvider:
       f"&hourly={OpenMeteoDataProvider.OM_HOURLY}",
       f"&daily={OpenMeteoDataProvider.OM_DAILY}",
       "&timezone=auto",
-      "&forecast_days=5"
+      "&forecast_days=6"
       ])
     self._wifi   = None
 
@@ -138,7 +138,7 @@ class OpenMeteoDataProvider:
 
     for i in [h_min,h_mid,h_max]:
       val = Values()
-      val.hour   = f"{i:02d}"
+      val.hour   = f"{i:02d}" if i<23 else f"{i-24:02d}"
       val.temp   = data["temperature_2m"][i]
       val.wmo    = data["weathercode"][i]
       val.is_day = data["is_day"][i]
@@ -169,9 +169,72 @@ class OpenMeteoDataProvider:
                          -1,-1,-1))
     return (int(epoch/86400)+3) % 7                    # 01/01/1970 is Thursday
 
+  # --- get weathercode for daily data   --------------------------------------
+
+  def _get_daily_wcode(self,data):
+    """ use our own aggregation-logic from hourly data """
+
+    # count weathercodes
+    buckets = []
+    for i in range(self._daily_off,self._daily_off+4):
+      day_bucket = {}
+      for j in range(24):
+        if not data["is_day"][i*24+j]:
+          continue
+        wcode = data["weathercode"][i*24+j]
+        if wcode in day_bucket:
+          day_bucket[wcode] += 1
+        else:
+          day_bucket[wcode] = 1
+      buckets.append(day_bucket)
+
+    # aggregate weather codes
+    awmo_codes = []
+    for day in buckets:
+      print(f"day-codes: {day}")
+      wmo_codes = set(day.keys())
+
+      # if there is only one weathercode, use it!
+      if len(wmo_codes) == 1:
+        awmo_codes.append(wmo_codes.pop())
+        print(f"    awmo: {awmo_codes[-1]}")
+        continue
+
+      # else aggregate codes
+      awmo_code = 1000
+      if wmo_codes & set([0,1,2]):    # WMO clear, mainly-clear, partly-cloudy
+        awmo_code += 1
+      if wmo_codes & set([1,2,3]):    # WMO mainly-clear - overcast
+        awmo_code += 2
+      if set([0,1,2]) <= wmo_codes:   # sun+clouds: check intensity
+        if day[1] <= day[2]:
+          awmo_code += 1
+      if wmo_codes & set([51,53,55,   # WMO drizzle
+                          61,63,65,   # WMO rain
+                          66,67,      # WMO freezing rain
+                          80,81,82    # WMO rain showers
+                          ]):
+        awmo_code += 4
+      if wmo_codes & set([71,73,75,   # WMO snow
+                          77,         # WMO snow grains
+                          85,86       # WMO snow showers
+                          ]):
+        awmo_code += 8
+      if wmo_codes & set([45,48]):    # WMO fog, depositing rime fog
+        awmo_code += 16
+      if wmo_codes & set([95,96,99]): # WMO thunderstorm
+        awmo_code += 32
+
+      # save to result and continue
+      print(f"    awmo: {awmo_code}")
+      awmo_codes.append(awmo_code)
+
+    print(f"awmo_codes: {awmo_codes}")
+    return awmo_codes
+
   # --- parse daily data   ----------------------------------------------------
 
-  def _parse_days(self,data):
+  def _parse_days(self,data,wcodes):
     """ parse daily data """
 
     for i in range(self._daily_off,self._daily_off+4):
@@ -181,7 +244,8 @@ class OpenMeteoDataProvider:
       val.wday  = self._get_wday(data["time"][i])
       val.tmin  = self._round(data["temperature_2m_min"][i])
       val.tmax  = self._round(data["temperature_2m_max"][i])
-      val.wmo   = data["weathercode"][i]
+      #val.wmo  = data["weathercode"][i]
+      val.wmo   = wcodes[i-self._daily_off]
       #val.sunrise    = self._parse_time(data["sunrise"])[1]
       #val.sunset     = self._parse_time(data["sunset"])[1]
       #val.prec_hours = data["precipitation_hours"]
@@ -200,8 +264,9 @@ class OpenMeteoDataProvider:
     # next hours: hour, temp, wmo
     self._parse_hours(om_data["hourly"])
 
-    # next days: date, temp (min/max), icon
-    self._parse_days(om_data["daily"])
+    # next days: date, temp (min/max)
+    wcodes = self._get_daily_wcode(om_data["hourly"])   # aggregated
+    self._parse_days(om_data["daily"],wcodes)
 
     #self.print_all()
     data.update({
