@@ -204,11 +204,11 @@ class OpenMeteoDataProvider:
       awmo_code = 1000
       if wmo_codes & set([0,1,2]):    # WMO clear, mainly-clear, partly-cloudy
         awmo_code += 1
+        if (day.get(0,0)+day.get(1,0) # sun+clouds: check intensity
+            < day.get(2,0)+day.get(3,0)):
+          awmo_code += 1
       if wmo_codes & set([1,2,3]):    # WMO mainly-clear - overcast
         awmo_code += 2
-      if set([0,1,2]) <= wmo_codes:   # sun+clouds: check intensity
-        if day[1] <= day[2]:
-          awmo_code += 1
       if wmo_codes & set([51,53,55,   # WMO drizzle
                           61,63,65,   # WMO rain
                           66,67,      # WMO freezing rain
