@@ -50,7 +50,12 @@ class OpenMeteoDataProvider:
     "sunset"
   ])
 
-  def __init__(self):
+  # --- constructor   --------------------------------------------------------
+
+  def __init__(self,debug=False):
+    """ constructor """
+
+    self._debug       = debug
     self._url = "".join([
       "https://api.open-meteo.com/v1/forecast?",
       f"latitude={app_config.latitude}",
@@ -67,6 +72,13 @@ class OpenMeteoDataProvider:
     self.current = None
     self.hours   = []
     self.days    = []
+
+  # --- print debug-message   ------------------------------------------------
+
+  def msg(self,text):
+    """ print (debug) message """
+    if self._debug:
+      print(text)
 
   # --- set wifi-object   ----------------------------------------------------
 
@@ -191,13 +203,13 @@ class OpenMeteoDataProvider:
     # aggregate weather codes
     awmo_codes = []
     for day in buckets:
-      print(f"day-codes: {day}")
+      self.msg(f"day-codes: {day}")
       wmo_codes = set(day.keys())
 
       # if there is only one weathercode, use it!
       if len(wmo_codes) == 1:
         awmo_codes.append(wmo_codes.pop())
-        print(f"    awmo: {awmo_codes[-1]}")
+        self.msg(f"    awmo: {awmo_codes[-1]}")
         continue
 
       # else aggregate codes
@@ -226,10 +238,10 @@ class OpenMeteoDataProvider:
         awmo_code += 32
 
       # save to result and continue
-      print(f"    awmo: {awmo_code}")
+      self.msg(f"    awmo: {awmo_code}")
       awmo_codes.append(awmo_code)
 
-    print(f"awmo_codes: {awmo_codes}")
+    self.msg(f"awmo_codes: {awmo_codes}")
     return awmo_codes
 
   # --- parse daily data   ----------------------------------------------------
@@ -268,7 +280,6 @@ class OpenMeteoDataProvider:
     wcodes = self._get_daily_wcode(om_data["hourly"])   # aggregated
     self._parse_days(om_data["daily"],wcodes)
 
-    #self.print_all()
     data.update({
       "units": {
         "temp":       om_data["current_units"]["temperature_2m"],
@@ -278,20 +289,3 @@ class OpenMeteoDataProvider:
       "hours":   self.hours,
       "days":    self.days
       })
-
-  # --- print complete object   ----------------------------------------------
-
-  def print_all(self):
-    """ print complete object """
-
-    print("Current:\n--------")
-    self.current.print()
-    print("-"*10)
-    print("\nHours:\n-----")
-    for hour in self.hours:
-      hour.print()
-      print("-"*10)
-    print("\nDays:\n-----")
-    for day in self.days:
-      day.print()
-      print("-"*10)
