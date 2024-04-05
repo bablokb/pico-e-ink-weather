@@ -137,9 +137,10 @@ class OpenMeteoUIProvider:
 
   # --- constructor   --------------------------------------------------------
 
-  def __init__(self):
+  def __init__(self,debug=False):
     """ constructor: create ressources """
 
+    self._debug       = debug
     self._large_font  = bitmap_font.load_font(UI_SETTINGS.LARGE_FONT)
     self._small_font  = bitmap_font.load_font(UI_SETTINGS.SMALL_FONT)
     self._wdir_font   = bitmap_font.load_font(UI_SETTINGS.WDIR_FONT)
@@ -147,6 +148,7 @@ class OpenMeteoUIProvider:
     self._margin      = UI_SETTINGS.MARGIN
     self._padding     = UI_SETTINGS.PADDING
     self._model       = {}
+    self._frame       = None
 
   # --- map wmo to char of WI-font   -----------------------------------------
 
@@ -274,8 +276,8 @@ class OpenMeteoUIProvider:
 
   # --- update data   --------------------------------------------------------
 
-  def update_data(self,new_data):
-    """ update data: callback for E-Ink-App """
+  def update_ui(self,new_data):
+    """ update data: callback for Application """
 
     # update model
     self._model.update(new_data)
@@ -285,29 +287,37 @@ class OpenMeteoUIProvider:
     self._model["date"] = UI_MONTHS[int(self._model["current"].month)-1]
     self._model["now"]  = self._model["current"].update
 
-  # --- create complete content   --------------------------------------------
+    # remove old header, footer, grid (keep background)
+    if len(self._frame_group) == 4:
+      for _ in range(3):
+        self._frame_group.pop()
+      gc.collect()
 
-  def create_content(self,display):
-    """ create content """
-
-    frame = Frame(display,self._model)
-
-    g = frame.get_group()
-    (header,h_header) = frame.get_header()
-    g.append(header)
-    (footer,h_footer) = frame.get_footer()
-    g.append(footer)
+    (header,h_header) = self._frame.get_header()
+    self._frame_group.append(header)
+    (footer,h_footer) = self._frame.get_footer()
+    self._frame_group.append(footer)
     gc.collect()
 
     # create layout for weather
-    width  = display.width
-    height = display.height - h_header - h_footer
-    grid = self._get_grid(width,height)
+    grid = self._get_grid(self._width,self._height - h_header - h_footer)
     grid.x = self._margin
     grid.y = h_header
-    g.append(grid)
+    self._frame_group.append(grid)
 
-    return g
+  # --- create complete content   --------------------------------------------
+
+  def create_ui(self,display):
+    """ create content """
+
+    if self._frame:
+      return
+    else:
+      self._width       = display.width
+      self._height      = display.height
+      self._frame       = Frame(display,self._model)
+      self._frame_group = self._frame.create_group()
+    return self._frame_group
 
   # --- handle exception   ---------------------------------------------------
 

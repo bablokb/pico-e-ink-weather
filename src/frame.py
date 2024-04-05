@@ -36,7 +36,7 @@ class Frame:
 
   # --- create root-group   --------------------------------------------------
 
-  def get_group(self):
+  def create_group(self):
     """ create root-group """
 
     g = displayio.Group()
