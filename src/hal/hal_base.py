@@ -8,25 +8,27 @@
 # License: GPL3
 #
 # Website: https://github.com/bablokb/pico-e-ink-weather
-#
 # ----------------------------------------------------------------------------
 
 import board
+import time
+try:
+  import alarm
+except:
+  pass
 from digitalio import DigitalInOut, Direction
 
 class HalBase:
   def __init__(self):
     """ constructor """
-    pass
+    self._display = None
 
-  def status_led(self,value):
-    """ set status LED """
+  def led(self,value,color=None):
+    """ set status LED (ignore color) """
     if not hasattr(self,"_led"):
-      if hasattr(board,'LED'):
-        self._led = DigitalInOut(board.LED)
-        self._led.direction = Direction.OUTPUT
-    if hasattr(board,'LED'):
-      self._led.value = value
+      self._led = DigitalInOut(board.LED)
+      self._led.direction = Direction.OUTPUT
+    self._led.value = value
 
   def bat_level(self):
     """ return battery level """
@@ -39,18 +41,59 @@ class HalBase:
     else:
       return 0.0
 
-  def wifi(self):
+  def wifi(self,debug=False):
     """ return wifi-interface """
     from wifi_helper_builtin import WifiHelper
-    return WifiHelper(debug=True)
+    return WifiHelper(debug=debug)
 
   def get_display(self):
     """ return display """
-    return board.DISPLAY
+    if not self._display:
+      self._display = getattr(board,'DISPLAY',None)
+    return self._display
+
+  def show(self,content):
+    """ show and refresh the display """
+
+    self._display.root_group = content
+
+    while self._display.time_to_refresh > 0.0:
+      # ttr will be >0 only if system is on running on USB-power
+      time.sleep(self._display.time_to_refresh)
+
+    start = time.monotonic()
+    while True:
+      try:
+        self._display.refresh()
+        break
+      except RuntimeError:
+        pass
+    duration = time.monotonic()-start
+
+    update_time = self._display.time_to_refresh - duration
+    if update_time > 0.0:
+      # might running on battery-power: save some power using light-sleep
+      time_alarm = alarm.time.TimeAlarm(
+        monotonic_time=time.monotonic()+update_time)
+      alarm.light_sleep_until_alarms(time_alarm)
 
   def get_rtc_ext(self):
     """ return external rtc, if available """
     return None
 
   def shutdown(self):
+    """ shutdown system """
     pass
+
+  def reset_if_needed(self):
+    """ reset device (workaround for MemoryError) """
+    pass
+
+  def sleep(self,duration):
+    """ sleep for the given duration in seconds """
+    time.sleep(duration)
+
+  def get_keys(self):
+    """ return list of pin-numbers for up, down, left, right """
+    # format is (active-state,[key1,...])
+    return None

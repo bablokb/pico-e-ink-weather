@@ -5,7 +5,6 @@
 # License: GPL3
 #
 # Website: https://github.com/bablokb/pico-e-ink-weather
-#
 # ----------------------------------------------------------------------------
 
 # display-sizes
@@ -13,6 +12,7 @@
 #   - Inky-Impression 4":   640x400
 #   - Inky-Impression 5.7": 600x448
 #   - Inky-Frame 5.7":      600x448
+#   - Badger2040W:          296x128
 
 import sys
 import time
@@ -25,28 +25,44 @@ class HalPygame(HalBase):
 
   def get_display(self):
     """ return display """
-    self._display = PyGameDisplay(width=400,height=300,
+    if self._display:
+      return self._display
+
+    self._display = PyGameDisplay(width=296,height=128,
                                   native_frames_per_second=1)
     return self._display
+
+  def show(self,content):
+    """ show and refresh the display """
+    self._display.show(content)
+    self._display.refresh()
 
   def bat_level(self):
     """ return battery level """
     return 3.6
 
-  def status_led(self,value):
-    """ set status LED """
+  def led(self,value,color=None):
+    """ set status LED (not-supported)"""
     pass
 
-  def wifi(self):
+  def wifi(self,debug=False):
     """ return wifi-interface """
     from wifi_helper_generic import WifiHelper
-    return WifiHelper(debug=True)
+    return WifiHelper(debug=debug)
 
   def shutdown(self):
-    """ leave program (here: wait for quit)"""
-    while True:
+    """ leave program """
+    sys.exit(0)
+
+  def sleep(self,duration):
+    if not self._display:
+      super.sleep(duration)
+      return
+
+    start = time.monotonic()
+    while time.monotonic()-start < duration:
       if self._display.check_quit():
         sys.exit(0)
-      time.sleep(0.25)
+      time.sleep(0.1)
 
 impl = HalPygame()
