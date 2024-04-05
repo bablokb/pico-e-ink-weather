@@ -28,7 +28,7 @@ class HalPygame(HalBase):
     if self._display:
       return self._display
 
-    self._display = PyGameDisplay(width=296,height=128,
+    self._display = PyGameDisplay(width=400,height=300,
                                   native_frames_per_second=1)
     return self._display
 
