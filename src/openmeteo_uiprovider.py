@@ -310,9 +310,7 @@ class OpenMeteoUIProvider:
   def create_ui(self,display):
     """ create content """
 
-    if self._frame:
-      return
-    else:
+    if not self._frame:
       self._width       = display.width
       self._height      = display.height
       self._frame       = Frame(display,self._model)
