@@ -110,6 +110,7 @@ class OpenMeteoDataProvider:
     self.current.day       = tm[4]
     self.current.month     = tm[3]
     self.current.update    = tm[6]
+    self.current.interval  = data["interval"]
 
     # measurements
     self.current.temp       = data["temperature_2m"]
