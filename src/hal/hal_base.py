@@ -25,18 +25,20 @@ class HalBase:
 
   def _init_led(self):
     """ initialize LED/Neopixel """
-    if hasattr(board,'LED'):
-      if not hasattr(self,'_led'):
-        self._led = DigitalInOut(board.LED)
-        self._led.direction = Direction.OUTPUT
-    elif hasattr(board,'NEOPIXEL'):
+    if hasattr(board,'NEOPIXEL'):
       if not hasattr(self,'_pixel'):
+        if hasattr(board,'NEOPIXEL_POWER'):
+          # need to do this first,
+          # https://github.com/adafruit/Adafruit_CircuitPython_MagTag/issues/75
+          self._pixel_poweroff = DigitalInOut(board.NEOPIXEL_POWER)
+          self._pixel_poweroff.direction = Direction.OUTPUT
         import neopixel
         self._pixel = neopixel.NeoPixel(board.NEOPIXEL,1,
                                         brightness=0.1,auto_write=False)
-        if hasattr(board,'NEOPIXEL_POWER'):
-          self._pixel_poweroff = DigitalInOut(board.NEOPIXEL_POWER)
-          self._pixel_poweroff.direction = Direction.OUTPUT
+    elif hasattr(board,'LED'):
+      if not hasattr(self,'_led'):
+        self._led = DigitalInOut(board.LED)
+        self._led.direction = Direction.OUTPUT
 
     # replace method with noop
     self._init_led = lambda: None
@@ -48,7 +50,7 @@ class HalBase:
       self._led.value = value
     elif hasattr(self,'_pixel'):
       if hasattr(self,'_pixel_poweroff'):
-        self._pixel_poweroff = not value
+        self._pixel_poweroff.value = not value
       if value:
         self._pixel.fill(color)
         self._pixel.show()
@@ -72,7 +74,14 @@ class HalBase:
   def get_display(self):
     """ return display """
     if not self._display:
-      self._display = getattr(board,'DISPLAY',None)
+      if hasattr(board,'DISPLAY'):           # try builtin display
+        self._display = board.DISPLAY
+      else:                                  # try display from settings
+        try:
+          from settings import hw_config
+          self._display = hw_config.get_display()
+        except:
+          self._display = None
     return self._display
 
   def show(self,content):
@@ -102,7 +111,11 @@ class HalBase:
 
   def get_rtc_ext(self):
     """ return external rtc, if available """
-    return None
+    try:
+      from settings import hw_config
+      return hw_config.get_rtc()
+    except:
+      return None
 
   def shutdown(self):
     """ shutdown system """
@@ -119,4 +132,8 @@ class HalBase:
   def get_keys(self):
     """ return list of pin-numbers for up, down, left, right """
     # format is (active-state,[key1,...])
-    return None
+    try:
+      from settings import hw_config
+      return hw_config.get_keys()
+    except:
+      return None
