@@ -46,6 +46,7 @@ class OpenMeteoDataProvider:
     "temperature_2m_max",
     "precipitation_sum",
     "precipitation_hours",
+    "sunshine_duration",
     "sunrise",
     "sunset"
   ])
@@ -259,9 +260,10 @@ class OpenMeteoDataProvider:
       val.tmax  = self._round(data["temperature_2m_max"][i])
       #val.wmo  = data["weathercode"][i]
       val.wmo   = wcodes[i-self._daily_off]
-      #val.sunrise    = self._parse_time(data["sunrise"])[1]
-      #val.sunset     = self._parse_time(data["sunset"])[1]
-      #val.prec_hours = data["precipitation_hours"]
+      #val.sunrise    = self._parse_time(data["sunrise"])[i]
+      #val.sunset     = self._parse_time(data["sunset"])[i]
+      val.prec_hours = int(data["precipitation_hours"][i])
+      val.sun_hours  = self._round(data["sunshine_duration"][i]/3600)
       self.days.append(val)
 
   # --- query weather-data   -------------------------------------------------

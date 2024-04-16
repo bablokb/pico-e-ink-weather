@@ -272,6 +272,24 @@ class OpenMeteoUIProvider:
                        anchor_point=(0.5,0.15),
                        anchored_position=(self._margin+i*(b_width+1)+b_width2,
                                           b_height+1+b_height2)))
+
+      sun_hours = f"{d_data.sun_hours}h"
+      g.append(label.Label(self._small_font,text=sun_hours,
+                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
+                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       anchor_point=(0.00,1.00),
+                       anchored_position=(
+                             i*(b_width+1),
+                             2*b_height-self._margin-1)))
+
+      prec_hours = f"{d_data.prec_hours}h"
+      g.append(label.Label(self._small_font,text=prec_hours,
+                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
+                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
+                       anchor_point=(1.00,1.00),
+                       anchored_position=(
+                             (i+1)*(b_width)-self._margin,
+                             2*b_height-self._margin-1)))
     return g
 
   # --- update data   --------------------------------------------------------
