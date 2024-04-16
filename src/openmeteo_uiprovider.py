@@ -190,7 +190,6 @@ class OpenMeteoUIProvider:
       label.Label(self._large_font,
                   text=f"{self._model['current'].temp}°",
                   color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                  background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                   anchor_point=(0.5,0),
                   anchored_position=(b_width2,
                                      self._margin)))
@@ -199,7 +198,6 @@ class OpenMeteoUIProvider:
       self._model["current"].wind_dir]
     g.append(label.Label(self._wdir_font,text=wdir_char,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0.5),
                        anchored_position=(b_width2,b_height2
                                           )))
@@ -207,7 +205,6 @@ class OpenMeteoUIProvider:
     speed_txt = f"{self._model['current'].wind_speed} {self._model['units']['wind_speed']}"
     g.append(label.Label(self._small_font,text=speed_txt,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,1),
                        anchored_position=(b_width2,
                                           b_height-self._margin)))
@@ -219,7 +216,6 @@ class OpenMeteoUIProvider:
       h_txt2  = f"{h_data.temp}°"
       h_txt1_label = label.Label(self._small_font,text=h_txt1,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
@@ -227,7 +223,6 @@ class OpenMeteoUIProvider:
       g.append(h_txt1_label)
       g.append(label.Label(self._small_font,text=h_txt2,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
@@ -236,7 +231,6 @@ class OpenMeteoUIProvider:
       icon = self._map_wmo(h_data.wmo,h_data.is_day)
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        background_tight=True,
                        anchor_point=(0.5,0.15),
                        anchored_position=(self._margin+(i+1)*b_width+b_width2,
@@ -249,7 +243,6 @@ class OpenMeteoUIProvider:
       d_txt2 = f"{d_data.tmin}°/{d_data.tmax}°"
       d_txt1_label = label.Label(self._small_font,text=d_txt1,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0.00),
                        anchored_position=(
                              i*(b_width+1)+b_width2,
@@ -257,7 +250,6 @@ class OpenMeteoUIProvider:
       g.append(d_txt1_label)
       g.append(label.Label(self._small_font,text=d_txt2,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.5,0.00),
                        anchored_position=(
                              i*(b_width+1)+b_width2,
@@ -267,7 +259,6 @@ class OpenMeteoUIProvider:
       icon = self._map_wmo(d_data.wmo)
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        background_tight=True,
                        anchor_point=(0.5,0.15),
                        anchored_position=(self._margin+i*(b_width+1)+b_width2,
@@ -276,7 +267,6 @@ class OpenMeteoUIProvider:
       sun_hours = f"{d_data.sun_hours}h"
       g.append(label.Label(self._small_font,text=sun_hours,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(0.00,1.00),
                        anchored_position=(
                              i*(b_width+1),
@@ -285,7 +275,6 @@ class OpenMeteoUIProvider:
       prec_hours = f"{d_data.prec_hours}h"
       g.append(label.Label(self._small_font,text=prec_hours,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                       background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                        anchor_point=(1.00,1.00),
                        anchored_position=(
                              (i+1)*(b_width)-self._margin,

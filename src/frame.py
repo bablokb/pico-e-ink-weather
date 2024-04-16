@@ -56,7 +56,6 @@ class Frame:
     day_font = bitmap_font.load_font(UI_SETTINGS.DAY_FONT)
     day = label.Label(day_font,text=self._data["day"],
                       color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
-                      background_color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                       background_tight=True,
                       anchor_point=(0,0),
                       anchored_position=(self._margin,self._margin))
@@ -86,7 +85,6 @@ class Frame:
     date_font   = bitmap_font.load_font(UI_SETTINGS.DATE_FONT)
     date = label.Label(date_font,text=self._data["date"],
                       color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                      background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                       background_tight=True,
                       anchor_point=(0,1),
                        anchored_position=(5*self._margin,h-2*self._margin))
@@ -102,7 +100,6 @@ class Frame:
     status = label.Label(self._small_font,
                          text=f"Updated: {self._data['now']}",
                          color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                         background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                          base_alignment=True,
                          anchor_point=(0,1),
                          anchored_position=(self._margin,
@@ -111,7 +108,6 @@ class Frame:
     level = label.Label(self._small_font,
                         text=f"{self._data['bat_level']:0.1f}V",
                         color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
-                        background_color=UI_PALETTE[UI_SETTINGS.BACKGROUND],
                         base_alignment=True,
                         anchor_point=(1,1),
                         anchored_position=(self._display.width-self._margin,
