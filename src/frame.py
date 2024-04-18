@@ -98,7 +98,7 @@ class Frame:
 
     footer = displayio.Group()
     status = label.Label(self._small_font,
-                         text=f"Updated: {self._data['now']}",
+                         text=f"{UI_SETTINGS.FOOTER}: {self._data['now']}",
                          color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                          base_alignment=True,
                          anchor_point=(0,1),

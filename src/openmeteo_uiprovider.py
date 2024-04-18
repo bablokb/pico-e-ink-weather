@@ -20,7 +20,7 @@ from adafruit_display_text import label
 from adafruit_display_shapes.line import Line
 from adafruit_bitmap_font import bitmap_font
 
-from ui_settings import UI_SETTINGS, COLORS, UI_COLOR_MAP, UI_PALETTE, UI_MONTHS, UI_DAYS
+from ui_settings import UI_SETTINGS, COLORS, UI_COLOR_MAP, UI_PALETTE
 from frame import Frame
 
 # --- OpenMeteo Class for layout   -------------------------------------------
@@ -239,7 +239,7 @@ class OpenMeteoUIProvider:
     # days
     for i in range(4):
       d_data = self._model["days"][i]
-      d_txt1 = f"{UI_DAYS[d_data.wday]} {d_data.day}.{d_data.month}."
+      d_txt1 = f"{UI_SETTINGS.UI_DAYS[d_data.wday]} {d_data.day}.{d_data.month}."
       d_txt2 = f"{d_data.tmin}°/{d_data.tmax}°"
       d_txt1_label = label.Label(self._small_font,text=d_txt1,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
@@ -291,7 +291,7 @@ class OpenMeteoUIProvider:
 
     # map values for day and month
     self._model["day"]  = self._model["current"].day
-    self._model["date"] = UI_MONTHS[int(self._model["current"].month)-1]
+    self._model["date"] = UI_SETTINGS.UI_MONTHS[int(self._model["current"].month)-1]
     self._model["now"]  = self._model["current"].update
 
     # remove old header, footer, grid (keep background)
