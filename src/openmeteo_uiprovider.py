@@ -260,7 +260,7 @@ class OpenMeteoUIProvider:
       g.append(label.Label(self._wicon_font,text=icon,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        background_tight=True,
-                       anchor_point=(0.5,0.15),
+                       anchor_point=(0.5,0.3),
                        anchored_position=(self._margin+i*(b_width+1)+b_width2,
                                           b_height+1+b_height2)))
 
