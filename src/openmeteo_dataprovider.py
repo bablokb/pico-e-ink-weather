@@ -152,7 +152,7 @@ class OpenMeteoDataProvider:
 
     for i in [h_min,h_mid,h_max]:
       val = Values()
-      val.hour   = f"{i:02d}" if i<23 else f"{i-24:02d}"
+      val.hour   = f"{i:02d}" if i<24 else f"{i-24:02d}"
       val.temp   = data["temperature_2m"][i]
       val.wmo    = data["weathercode"][i]
       val.is_day = data["is_day"][i]
