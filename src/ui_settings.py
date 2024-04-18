@@ -44,14 +44,6 @@ UI_COLOR_MAP = {
   "orange": (COLORS.ORANGE,COLORS.BLACK)
   }
 
-UI_MONTHS = [
-  "Januar", "Februar", "März",      "April",   "Mai",      "Juni",
-  "Juli",   "August",  "September", "Oktober", "November", "Dezember"
-  ]
-UI_DAYS = [
-  "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"
-  ]
-
 UI_SETTINGS = Settings()
 UI_SETTINGS.LARGE_FONT  = "fonts/DejaVuSerif-32.bdf"
 UI_SETTINGS.SMALL_FONT  = "fonts/DejaVuSerif-18.bdf"
@@ -65,3 +57,22 @@ UI_SETTINGS.FOREGROUND = COLORS.BLACK
 UI_SETTINGS.BACKGROUND = COLORS.WHITE
 UI_SETTINGS.NO_NETWORK = "images/no-server-connection.bmp"
 UI_SETTINGS.NO_EVENTS  = "images/empty-agenda.bmp"
+
+UI_SETTINGS.UI_MONTHS = [
+  "January", "February", "March",     "April",   "May",      "June",
+  "July",    "August",   "September", "October", "November", "December"
+  ]
+UI_SETTINGS.UI_DAYS = [
+  "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"
+  ]
+UI_SETTINGS.FOOTER = "Updated"
+
+# overrides from settings
+
+try:
+  from settings import ui_config
+  for var in dir(ui_config):
+    if var[0] != '_':
+      setattr(UI_SETTINGS,var,getattr(ui_config,var))
+except:
+  pass
