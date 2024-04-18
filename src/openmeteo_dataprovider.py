@@ -183,15 +183,19 @@ class OpenMeteoDataProvider:
                          -1,-1,-1))
     return (int(epoch/86400)+3) % 7                    # 01/01/1970 is Thursday
 
-  # --- get weathercode for daily data   --------------------------------------
+  # --- get aggregated data per day from hourly data   ------------------------
 
-  def _get_daily_wcode(self,data):
+  def _get_day_aggregates(self,data):
     """ use our own aggregation-logic from hourly data """
 
-    # count weathercodes
-    buckets = []
+    # count weathercodes, sun and precipitation
+    buckets    = []
+    sun_hours  = []
+    prec_hours = []
     for i in range(self._daily_off,self._daily_off+4):
       day_bucket = {}
+      sun_h      = 0
+      prec_h     = 0
       for j in range(24):
         if not data["is_day"][i*24+j]:
           continue
@@ -200,7 +204,13 @@ class OpenMeteoDataProvider:
           day_bucket[wcode] += 1
         else:
           day_bucket[wcode] = 1
+        if wcode < 3:             # wmo-code overcast
+          sun_h += 1
+        if data["precipitation"][i*24+j] > 0:
+          prec_h += 1
       buckets.append(day_bucket)
+      sun_hours.append(sun_h)
+      prec_hours.append(prec_h)
 
     # aggregate weather codes
     awmo_codes = []
@@ -244,11 +254,11 @@ class OpenMeteoDataProvider:
       awmo_codes.append(awmo_code)
 
     self.msg(f"awmo_codes: {awmo_codes}")
-    return awmo_codes
+    return awmo_codes,sun_hours,prec_hours
 
   # --- parse daily data   ----------------------------------------------------
 
-  def _parse_days(self,data,wcodes):
+  def _parse_days(self,data,wcodes,sun_hours,prec_hours):
     """ parse daily data """
 
     for i in range(self._daily_off,self._daily_off+4):
@@ -258,12 +268,11 @@ class OpenMeteoDataProvider:
       val.wday  = self._get_wday(data["time"][i])
       val.tmin  = self._round(data["temperature_2m_min"][i])
       val.tmax  = self._round(data["temperature_2m_max"][i])
-      #val.wmo  = data["weathercode"][i]
       val.wmo   = wcodes[i-self._daily_off]
       #val.sunrise    = self._parse_time(data["sunrise"])[i]
       #val.sunset     = self._parse_time(data["sunset"])[i]
-      val.prec_hours = int(data["precipitation_hours"][i])
-      val.sun_hours  = self._round(data["sunshine_duration"][i]/3600)
+      val.sun_hours  = sun_hours[i-self._daily_off]
+      val.prec_hours = prec_hours[i-self._daily_off]
       self.days.append(val)
 
   # --- query weather-data   -------------------------------------------------
@@ -280,8 +289,8 @@ class OpenMeteoDataProvider:
     self._parse_hours(om_data["hourly"])
 
     # next days: date, temp (min/max)
-    wcodes = self._get_daily_wcode(om_data["hourly"])   # aggregated
-    self._parse_days(om_data["daily"],wcodes)
+    wcodes,sun_hours,prec_hours = self._get_day_aggregates(om_data["hourly"])
+    self._parse_days(om_data["daily"],wcodes,sun_hours,prec_hours)
 
     data.update({
       "units": {
