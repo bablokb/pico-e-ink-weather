@@ -280,7 +280,14 @@ class OpenMeteoDataProvider:
   def update_data(self,data):
     """ callback for E-Ink-App: query weather data """
 
-    om_data = self._wifi.get_json(self._url)
+    try:
+      om_data = self._wifi.get_json(self._url)
+    except:
+      return
+
+    self.current = None
+    self.hours   = []
+    self.days    = []
 
     # current: temp, wind-direction, wind-speed
     self._parse_current(om_data["current"])
