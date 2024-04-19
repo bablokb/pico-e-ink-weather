@@ -186,13 +186,15 @@ class OpenMeteoUIProvider:
       g.append(Line(i*b_width,0,i*b_width,height,
                  color=UI_PALETTE[UI_SETTINGS.FOREGROUND]))
     # current day
+    # note: current-temp is slightly moved to the right using a fixed
+    #       offset. The dynamic solution would be to measure the size of "°"
     g.append(
       label.Label(self._large_font,
                   text=f"{self._model['current'].temp}°",
                   color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                   anchor_point=(0.5,0),
-                  anchored_position=(b_width2,
-                                     self._margin)))
+                  anchored_position=(b_width2+3*self._margin,
+                                     2*self._margin)))
 
     wdir_char = OpenMeteoUIProvider.DIR_MAP[
       self._model["current"].wind_dir]
@@ -219,14 +221,14 @@ class OpenMeteoUIProvider:
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
-                             self._margin))
+                             2*self._margin))
       g.append(h_txt1_label)
       g.append(label.Label(self._small_font,text=h_txt2,
                        color=UI_PALETTE[UI_SETTINGS.FOREGROUND],
                        anchor_point=(0.5,0),
                        anchored_position=(
                              self._margin+(i+1)*(b_width+1)+b_width2,
-                             self._margin+h_txt1_label.bounding_box[3]+6)))
+                             2*self._margin+h_txt1_label.bounding_box[3]+6)))
 
       icon = self._map_wmo(h_data.wmo,h_data.is_day)
       g.append(label.Label(self._wicon_font,text=icon,
