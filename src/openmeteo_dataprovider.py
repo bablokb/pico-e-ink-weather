@@ -70,10 +70,6 @@ class OpenMeteoDataProvider:
       ])
     self._wifi   = None
 
-    self.current = None
-    self.hours   = []
-    self.days    = []
-
   # --- print debug-message   ------------------------------------------------
 
   def msg(self,text):
@@ -131,6 +127,7 @@ class OpenMeteoDataProvider:
   def _parse_hours(self,data):
     """ parse hourly data """
 
+    self.hours   = []
     # extract only a subset of hourly data:
     # three hours between 08:00 and 21:00
 
@@ -261,6 +258,7 @@ class OpenMeteoDataProvider:
   def _parse_days(self,data,wcodes,sun_hours,prec_hours):
     """ parse daily data """
 
+    self.days    = []
     for i in range(self._daily_off,self._daily_off+4):
       val = Values()
       val.day   = data["time"][i][-2:]
@@ -280,14 +278,14 @@ class OpenMeteoDataProvider:
   def update_data(self,data):
     """ callback for E-Ink-App: query weather data """
 
-    try:
-      om_data = self._wifi.get_json(self._url)
-    except:
-      return
-
-    self.current = None
-    self.hours   = []
-    self.days    = []
+    # try at most 3 times
+    for i in range(3):
+      try:
+        om_data = self._wifi.get_json(self._url)
+        break
+      except:
+        if i == 2:
+          raise
 
     # current: temp, wind-direction, wind-speed
     self._parse_current(om_data["current"])
