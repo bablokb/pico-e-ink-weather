@@ -78,6 +78,6 @@ class WifiHelper:
   def get_json(self,url):
     """ process get-request """
 
-    if not self._wifi:
+    if not self._wifi or not self._wifi.connected:
       self.connect()
     return self._requests.get(url).json()
