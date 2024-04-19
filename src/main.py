@@ -51,12 +51,12 @@ class OpenMeteo(Application):
     """ return interval until next update is due """
 
     if self.data["last_update"] == "unknown":
-      # very first update - start with 5 minutes
+      # very first update - start with 2 minutes
       self.data["last_update"] = self.data["current"].update
-      interval = 300
+      interval = 120
     elif self.data["last_update"] == self.data["current"].update:
-      # no change - keep 5 minutes
-      interval = 300
+      # no change - use 2 minutes
+      interval = 120
     else:
       # data was updated - use interval of data
       self.data["last_update"] = self.data["current"].update
