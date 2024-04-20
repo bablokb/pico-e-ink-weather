@@ -180,6 +180,19 @@ class OpenMeteoDataProvider:
                          -1,-1,-1))
     return (int(epoch/86400)+3) % 7                    # 01/01/1970 is Thursday
 
+  # --- get mode of code in day-bucket   --------------------------------------
+
+  def _get_mode(self,bucket):
+    """ return mode: wmo code with highest count """
+
+    max_count = 0
+    for code in sorted(bucket.keys()):
+      count = bucket[code]
+      if count >= max_count:
+        max_count = count
+        max_code  = code
+    return max_code
+
   # --- get aggregated data per day from hourly data   ------------------------
 
   def _get_day_aggregates(self,data):
@@ -242,9 +255,17 @@ class OpenMeteoDataProvider:
         awmo_code += 16
       if wmo_codes & set([95,96,99]): # WMO thunderstorm
         awmo_code += 32
-      if awmo_code == 1003 and (       # sun+clouds: check intensity
+
+      # special case sun+clouds: tweak code to reflect relation
+      # Note that 1002 is not possible during aggregation above, so we
+      # can reuse it here
+      if awmo_code == 1003 and (
         day.get(0,0)+day.get(1,0) < day.get(2,0)+day.get(3,0)):
-        awmo_code += 1
+        awmo_code = 1002
+
+      # special case single category: use mode of values
+      if awmo_code in [1001,1004,1008,1016,1032]:
+        awmo_code = self._get_mode(day)
 
       # save to result and continue
       self.msg(f"    awmo: {awmo_code}")

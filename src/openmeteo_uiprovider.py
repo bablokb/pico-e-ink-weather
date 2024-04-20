@@ -63,8 +63,8 @@ class OpenMeteoUIProvider:
     99:("\uf01d","\uf01d"), 	#Thunderstorm with heavy hail
 
     # aggregated codes
+    1002:("\uf002",),
     1003:("\uf00c",),
-    1004:("\uf002",),
     1005:("\uf008",),
     1009:("\uf00a",),
     1017:("\uf0c4",),
