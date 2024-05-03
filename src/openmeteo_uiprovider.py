@@ -35,7 +35,7 @@ class OpenMeteoUIProvider:
     # Code 	Description
     0: ("\uf00d","\uf077"), 	#Clear sky
     1: ("\uf00c","\uf083"),	#Mainly clear
-    2: ("\uf013","\uf013"),	#partly cloudy
+    2: ("\uf002","\uf031"),	#partly cloudy
     3: ("\uf041","\uf041"),	#overcast
     45:("\uf021","\uf021"), 	#Fog
     48:("\uf021","\uf021"), 	#depositing rime fog
